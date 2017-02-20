@@ -1,5 +1,7 @@
 package com.cooksys.ftd.assignments.control;
 
+import java.util.Arrays;
+
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 /**
@@ -26,7 +28,13 @@ public class FizzBuzz {
      * @throws IllegalArgumentException if b is zero
      */
     public static boolean divides(int a, int b) throws IllegalArgumentException {
-        throw new NotImplementedException();
+    	if(b == 0) throw new IllegalArgumentException();
+    	if(a%b == 0){
+    		return true;
+    	}
+    	else{
+    		return false;
+    	}
     }
 
     /**
@@ -41,7 +49,20 @@ public class FizzBuzz {
      * @return a message according to the format above, or null if n is not divisible by either 3 or 5
      */
     public static String message(int n) {
-        throw new NotImplementedException();
+        String div = new String();
+        if(n%15==0){
+        	div = n+": FizzBuzz";
+        }
+        else if(n%5==0){
+        	div = n+": Buzz";
+        }
+        else if(n%3==0){
+        	div = n+": Fizz";
+        }
+        else{
+        	div = null;
+        }
+        return div;
     }
 
     /**
@@ -55,7 +76,23 @@ public class FizzBuzz {
      * @throws IllegalArgumentException if the given end is less than the given start
      */
     public static String[] messages(int start, int end) throws IllegalArgumentException {
-        throw new NotImplementedException();
+    	if(end<start) throw new IllegalArgumentException();
+    	int n = end-start;
+    	int nullcount = 0;
+    	String[] mArray = new String[n];
+    	int m = 0;
+    	for(int i = start;i<end;i++){
+    		if(message(i)!=null){
+    			mArray[m]= message(i);
+    		m++;
+    		}else
+    		{
+    			nullcount++;
+    		}
+    	}
+    	String[] nArray = new String[n-nullcount];
+    	nArray = Arrays.copyOf(mArray, nArray.length);
+    	return nArray;
     }
 
     /**
@@ -63,7 +100,10 @@ public class FizzBuzz {
      * the relevant messages to sysout
      */
     public static void main(String[] args) {
-        throw new NotImplementedException();
+       String[] pArray= messages(1,115);
+       for(int i = 0;i<pArray.length;i++){
+    	   System.out.println(pArray[i]);
+       }
     }
 
 }
