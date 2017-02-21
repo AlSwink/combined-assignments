@@ -14,8 +14,11 @@ public class Rational implements IRational {
      * @param denominator the denominator of the rational value
      * @throws IllegalArgumentException if the given denominator is 0
      */
+	private int num, den;
     public Rational(int numerator, int denominator) throws IllegalArgumentException {
-        throw new NotImplementedException();
+        if (denominator == 0) throw new IllegalArgumentException();
+    	num = numerator;
+    	den = denominator;
     }
 
     /**
@@ -23,7 +26,7 @@ public class Rational implements IRational {
      */
     @Override
     public int getNumerator() {
-        throw new NotImplementedException();
+        return num;
     }
 
     /**
@@ -31,7 +34,7 @@ public class Rational implements IRational {
      */
     @Override
     public int getDenominator() {
-        throw new NotImplementedException();
+    	return den;
     }
 
     /**
@@ -47,7 +50,8 @@ public class Rational implements IRational {
      */
     @Override
     public Rational construct(int numerator, int denominator) throws IllegalArgumentException {
-        throw new NotImplementedException();
+        if (denominator == 0) throw new IllegalArgumentException();
+    	return new Rational(numerator, denominator);
     }
 
     /**
@@ -58,7 +62,14 @@ public class Rational implements IRational {
      */
     @Override
     public boolean equals(Object obj) {
-        throw new NotImplementedException();
+    	boolean eql = false;
+		if (obj instanceof Rational) {
+			if (((Rational) obj).getNumerator() == this.getNumerator()
+					&& ((Rational)obj).getDenominator()==this.getDenominator()){
+        		eql = true;
+        	}
+        }
+        return eql;
     }
 
     /**
@@ -70,6 +81,6 @@ public class Rational implements IRational {
      */
     @Override
     public String toString() {
-        throw new NotImplementedException();
+    	return (num < 0 != den < 0 ? "-" : "") + Math.abs(num) + "/" + Math.abs(den);
     }
 }
