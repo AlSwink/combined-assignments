@@ -49,9 +49,10 @@ public class MegaCorp implements Hierarchy<Capitalist, FatCat> {
 			if (capitalist.hasParent()) {
 				if (has(capitalist.getParent()) == false) {
 					add(capitalist.getParent());
-					hierarchy.add(capitalist);
-					return true;
 				}
+				hierarchy.add(capitalist);
+				return true;
+				
 
 			} else if (capitalist instanceof WageSlave)
 				return false;
@@ -113,7 +114,7 @@ public class MegaCorp implements Hierarchy<Capitalist, FatCat> {
 	public Set<Capitalist> getChildren(FatCat fatCat) {
 		HashSet<Capitalist> children = new HashSet<>();
 		for (Capitalist child : hierarchy) {
-			if (child.hasParent() && child.getParent().equals(fatCat)) {
+			if (child.hasParent() && child.getParent() == fatCat) {
 				children.add(child);
 			}
 		}
