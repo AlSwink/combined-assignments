@@ -2,6 +2,7 @@ package com.cooksys.ftd.assignments.collections;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -15,7 +16,8 @@ import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 public class MegaCorp implements Hierarchy<Capitalist, FatCat> {
 
-	public HashMap<Capitalist, FatCat> corpMap = new HashMap<>();
+	// try changing this to a HashSet.
+	public HashSet<Capitalist> hierarchy = new HashSet<>();
 
 	/**
 	 * Adds a given element to the hierarchy.
@@ -38,28 +40,27 @@ public class MegaCorp implements Hierarchy<Capitalist, FatCat> {
 	 */
 	@Override
 	public boolean add(Capitalist capitalist) {
-		if(capitalist == null){
+		if (capitalist == null)
 			return false;
-		}
-		//if capitalist is already present do not add it and return false
-		if (corpMap.containsKey(capitalist) == false) {
-			//if capitalist has parent and parent is not part of hierarchy, add parent and element.
-			if (capitalist.hasParent() == true && corpMap.containsKey(capitalist.getParent()) == false) {
-				return add(capitalist.getParent());
-			}else if (capitalist.hasParent() == false) {//if capitalist has no parent...
-				if(capitalist instanceof WageSlave){//... and is not a parent don't add and return false
-					return false;
-				}else if(!corpMap.containsValue(capitalist)){//... and is a parent add and return true.
-					corpMap.put(capitalist, capitalist.getParent());
+
+		// if capitalist is already present do not add it and return false
+		if (has(capitalist) == false) {
+
+			if (capitalist.hasParent()) {
+				if (has(capitalist.getParent()) == false) {
+					add(capitalist.getParent());
+					hierarchy.add(capitalist);
 					return true;
 				}
-			} else {
-				corpMap.put(capitalist, capitalist.getParent());
+
+			} else if (capitalist instanceof WageSlave)
+				return false;
+			else {
+				hierarchy.add(capitalist);
 				return true;
 			}
 		}
 		return false;
-
 	}
 
 	/**
@@ -70,7 +71,7 @@ public class MegaCorp implements Hierarchy<Capitalist, FatCat> {
 	 */
 	@Override
 	public boolean has(Capitalist capitalist) {
-		if (corpMap.containsKey(capitalist)) {
+		if (hierarchy.contains(capitalist)) {
 			return true;
 		} else
 			return false;
@@ -82,7 +83,9 @@ public class MegaCorp implements Hierarchy<Capitalist, FatCat> {
 	 */
 	@Override
 	public Set<Capitalist> getElements() {
-		return corpMap.keySet();
+		HashSet<Capitalist> eSet = new HashSet<>();
+		eSet.addAll(hierarchy);
+		return eSet;
 	}
 
 	/**
@@ -91,7 +94,11 @@ public class MegaCorp implements Hierarchy<Capitalist, FatCat> {
 	 */
 	@Override
 	public Set<FatCat> getParents() {
-		Set<FatCat> parents = (Set<FatCat>) corpMap.values();
+		HashSet<FatCat> parents = new HashSet<>();
+		for (Capitalist cap : hierarchy) {
+			if (cap instanceof FatCat)
+				parents.add((FatCat) cap);
+		}
 		return parents;
 	}
 
@@ -104,7 +111,13 @@ public class MegaCorp implements Hierarchy<Capitalist, FatCat> {
 	 */
 	@Override
 	public Set<Capitalist> getChildren(FatCat fatCat) {
-		throw new NotImplementedException();
+		HashSet<Capitalist> children = new HashSet<>();
+		for (Capitalist child : hierarchy) {
+			if (child.hasParent() && child.getParent().equals(fatCat)) {
+				children.add(child);
+			}
+		}
+		return children;
 	}
 
 	/**
@@ -114,7 +127,15 @@ public class MegaCorp implements Hierarchy<Capitalist, FatCat> {
 	 */
 	@Override
 	public Map<FatCat, Set<Capitalist>> getHierarchy() {
-		throw new NotImplementedException();
+		HashMap<FatCat, Set<Capitalist>> defHier = new HashMap<>();
+		 Set<FatCat> parents = getParents();
+		 Set<Capitalist> children;
+		 for(FatCat fCat : parents){
+		 children = getChildren(fCat);
+		 defHier.put(fCat, children);
+		// children = null;
+		 }
+		return defHier;
 	}
 
 	/**
@@ -126,16 +147,14 @@ public class MegaCorp implements Hierarchy<Capitalist, FatCat> {
 	 */
 	@Override
 	public List<FatCat> getParentChain(Capitalist capitalist) {
-		ArrayList<FatCat> fCatList = new ArrayList<>();
-		if (capitalist.hasParent() == true) {
-			fCatList.add(capitalist.getParent());
-
-			for (Capitalist cap : fCatList) {
-				if (cap.hasParent()) {
-					fCatList.add(cap.getParent());
-				}
+		ArrayList<FatCat> pChain = new ArrayList<>();
+		if (capitalist != null) {
+			while (capitalist.hasParent() && has(capitalist.getParent())) {
+				pChain.add(capitalist.getParent());
+				capitalist = capitalist.getParent();
 			}
 		}
-		return fCatList;
+
+		return pChain;
 	}
 }
